@@ -1,0 +1,45 @@
+# Core Framework
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+
+# MCP Integration
+mcp
+asyncio-mqtt
+
+# AI/LLM
+google-generativeai
+openai
+instructor
+langchain
+langchain-google-genai
+
+# Database & Caching
+supabase
+postgrest
+redis
+sqlalchemy
+alembic
+
+# HTTP & API
+httpx
+tenacity
+websockets
+
+# Task Queue
+celery
+
+# Data Processing
+pandas
+numpy
+
+# Monitoring & Logging
+structlog
+prometheus-client
+
+# Development (optional, for local dev)
+pytest
+pytest-asyncio
+black
+ruff
