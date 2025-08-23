@@ -735,3 +735,85 @@ class BrexFinancialMonitor:
             logger.info(f"Published financial alert: {alert_data['alert_type']}")
         except Exception as e:
             logger.error(f"Error publishing alert: {e}")
+
+class CFOFinancialMethods:
+    def __init__(self, mock_generator: MockFinancialDataGenerator):
+        self.mock_generator = mock_generator
+
+    async def cash_flow_forecasting(self, periods: int = 12) -> Dict[str, Any]:
+        """
+        Performs a simplified cash flow forecast based on historical data.
+        Forecasts cash balance for a given number of future periods (months).
+        """
+        logger.info(f"Performing cash flow forecasting for {periods} periods.")
+        historical_data = self.mock_generator.get_historical_cash_flow_data(periods=3) # Get 3 months of historical data for trend analysis
+        
+        if not historical_data:
+            return {"error": "Insufficient historical data for forecasting."}
+
+        # Simplified approach: calculate average monthly inflow and outflow from historical data
+        total_inflow = sum(d.get('monthly_inflow', 0) for d in historical_data)
+        total_outflow = sum(d.get('monthly_outflow', 0) for d in historical_data)
+        
+        avg_monthly_inflow = total_inflow / len(historical_data)
+        avg_monthly_outflow = total_outflow / len(historical_data)
+        avg_net_cash_flow = avg_monthly_inflow - avg_monthly_outflow
+
+        current_cash_data = self.mock_generator.get_current_cash_flow_data()
+        current_balance = current_cash_data.get('total_balance', 0)
+
+        forecast_periods = []
+        projected_balance = current_balance
+
+        for i in range(1, periods + 1):
+            projected_balance += avg_net_cash_flow
+            forecast_periods.append({
+                "period": i,
+                "projected_net_cash_flow": avg_net_cash_flow,
+                "projected_balance": projected_balance,
+                "assumptions": "Based on average historical inflow/outflow"
+            })
+            if projected_balance <= 0:
+                logger.warning(f"Projected cash balance goes negative in period {i}")
+                # We could add more sophisticated logic here to predict runway based on this.
+
+        return {
+            "start_balance": current_balance,
+            "avg_monthly_inflow": avg_monthly_inflow,
+            "avg_monthly_outflow": avg_monthly_outflow,
+            "avg_net_cash_flow": avg_net_cash_flow,
+            "forecast_periods": forecast_periods,
+            "forecast_generated_at": datetime.now().isoformat()
+        }
+
+    async def budget_variance_analysis(self, budget_data: Dict[str, float], actual_data: Dict[str, float]) -> Dict[str, Any]:
+        """
+        Performs budget variance analysis, comparing budgeted amounts to actuals.
+        """
+        logger.info("Performing budget variance analysis.")
+        variances = {}
+        total_budget = sum(budget_data.values())
+        total_actual = sum(actual_data.values())
+        
+        for category in set(budget_data.keys()) | set(actual_data.keys()):
+            budgeted = budget_data.get(category, 0.0)
+            actual = actual_data.get(category, 0.0)
+            variance = actual - budgeted
+            
+            variances[category] = {
+                "budgeted": budgeted,
+                "actual": actual,
+                "variance": variance,
+                "status": "over_budget" if variance > 0 else ("under_budget" if variance < 0 else "on_budget")
+            }
+        
+        total_variance = total_actual - total_budget
+
+        return {
+            "category_variances": variances,
+            "total_budget": total_budget,
+            "total_actual": total_actual,
+            "total_variance": total_variance,
+            "overall_status": "over_budget" if total_variance > 0 else ("under_budget" if total_variance < 0 else "on_budget"),
+            "analysis_generated_at": datetime.now().isoformat()
+        }
