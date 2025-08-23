@@ -1,20 +1,39 @@
-# Runway Navigator - Godmode Dashboard
+# 🧠 Pensieve + Runway Navigator
 
-A modern SaaS dashboard application featuring an interactive 3D globe view for market intelligence and vendor management.
+> **Palantir for Startups** - Enterprise-grade data intelligence platform with interactive 3D dashboard
 
-## 🌟 Features
+Pensieve transforms how startups harness their data through powerful analytics, predictive modeling, and actionable insights - all accessible via simple API keys. Now enhanced with **Runway Navigator**, an interactive 3D globe dashboard for market intelligence and vendor management.
+
+## 🚀 What is Pensieve?
+
+Pensieve is an enterprise-grade data intelligence platform designed specifically for startups. Think of it as having Palantir's analytical capabilities without the enterprise complexity. We provide:
+
+- **🔍 Advanced Data Analytics** - Uncover hidden patterns in your business data
+- **📊 Predictive Modeling** - Forecast trends and identify opportunities
+- **🎯 Actionable Insights** - Turn data into strategic decisions
+- **🔐 Simple API Access** - Get started in minutes with API keys
+- **📈 Scalable Infrastructure** - Grows with your startup
+- **🌍 Interactive 3D Dashboard** - Visual market intelligence with Runway Navigator
+
+## 🌟 Runway Navigator Features
 
 ### Core Dashboard
 - **KPI Monitoring**: Real-time tracking of runway months, cash on hand, and monthly burn
-- **Navigation**: Sidebar with Dashboard, Signals, Vendors, Actions, and Settings
+- **Navigation**: Sidebar with Dashboard, Chessboard, Vendors, and Settings
 - **Responsive Design**: Modern UI built with TailwindCSS
 
 ### Godmode Globe View
-- **3D Interactive Globe**: Powered by 21st.dev globe component
+- **3D Interactive Globe**: Powered by react-globe.gl
 - **Company Points**: Visual representation of companies across the globe
 - **Risk Assessment**: Color-coded points based on risk levels (low/medium/high)
 - **Interactive Elements**: Click points to view detailed company information
 - **Real-time Data**: Live transaction feed and market signals
+
+### Financial Scenario Planning (Chessboard)
+- **Interactive Grid**: Build and compare financial scenarios
+- **Move Library**: Pre-built financial actions and strategies
+- **Visual Comparison**: Charts and tables for scenario analysis
+- **AI Recommendations**: Intelligent move suggestions
 
 ### Company Intelligence
 - **Detailed Profiles**: Company information, market cap, employees, founding date
@@ -22,65 +41,87 @@ A modern SaaS dashboard application featuring an interactive 3D globe view for m
 - **Transaction History**: Recent deals, investments, and partnerships
 - **Risk Analysis**: Comprehensive risk assessment and monitoring
 
-## 🚀 Quick Start
+## 🛠️ Quick Start
 
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
+- Python 3.8+ (for backend services)
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd runway-navigator
+   git clone https://github.com/xenn0010/pensieve.git
+   cd pensieve
+   git checkout runway-navigator
    ```
 
-2. **Install dependencies**
+2. **Install frontend dependencies**
    ```bash
    npm install
    ```
 
-3. **Start development server**
+3. **Install backend dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Start development server**
    ```bash
    npm run dev
    ```
 
-4. **Open your browser**
+5. **Open your browser**
    Navigate to `http://localhost:3000`
 
 ## 🏗️ Project Structure
 
 ```
-src/
-├── components/          # Reusable UI components
-│   ├── layout/         # Layout components (Sidebar, Header)
-│   ├── dashboard/      # Dashboard-specific components
-│   ├── globe/          # Globe view components
-│   └── ui/             # Generic UI components
-├── pages/              # Page components
-├── store/              # State management (Zustand)
-├── types/              # TypeScript type definitions
-├── data/               # Mock data and fixtures
-├── styles/             # Global styles and TailwindCSS
-└── utils/              # Utility functions
+├── Frontend (Runway Navigator)
+│   ├── src/
+│   │   ├── components/          # Reusable UI components
+│   │   │   ├── layout/         # Layout components (Sidebar, Header)
+│   │   │   ├── dashboard/      # Dashboard-specific components
+│   │   │   ├── globe/          # Globe view components
+│   │   │   ├── chessboard/     # Financial scenario planning
+│   │   │   └── ui/             # Generic UI components
+│   │   ├── pages/              # Page components
+│   │   ├── store/              # State management (Zustand)
+│   │   ├── types/              # TypeScript type definitions
+│   │   ├── data/               # Mock data and fixtures
+│   │   └── styles/             # Global styles and TailwindCSS
+│   └── package.json
+│
+├── Backend (Pensieve Core)
+│   ├── intelligence-engine/     # AI and decision orchestration
+│   ├── mcp-servers/            # Model Context Protocol servers
+│   ├── data-pipeline/          # Data processing and analytics
+│   ├── database/               # Database schemas and setup
+│   ├── config/                 # Configuration and settings
+│   └── tests/                  # Test suites
+│
+└── Documentation
+    ├── API_DOCUMENTATION.md    # API reference
+    ├── docs/                   # Detailed documentation
+    └── README.md               # This file
 ```
 
 ## 🎯 Key Components
 
 ### GlobeView
-The main 3D globe component that integrates with 21st.dev globe library:
+The main 3D globe component that integrates with react-globe.gl:
 - Interactive 3D globe with company points
 - Click interactions for company selection
 - Hover effects and animations
-- Fallback mode for development
+- Intelligent search and filtering
 
 ### CompanyDrawer
 Right-side panel showing detailed company information:
 - Company metrics and details
 - Market signals and risk assessment
 - Transaction history
-- Interactive elements
+- Interactive elements with expand/collapse
 
 ### TransactionOverlay
 Left-side panel displaying recent market activity:
@@ -89,6 +130,13 @@ Left-side panel displaying recent market activity:
 - Status indicators
 - Time-based filtering
 
+### Chessboard
+Financial scenario planning interface:
+- Interactive grid for building scenarios
+- Move library with pre-built strategies
+- Visual comparison tools
+- AI-powered recommendations
+
 ## 🎨 UI/UX Features
 
 - **Dark Theme**: Professional dark color scheme
@@ -96,6 +144,7 @@ Left-side panel displaying recent market activity:
 - **Smooth Animations**: CSS transitions and hover effects
 - **Responsive Design**: Mobile-friendly layout
 - **Interactive Elements**: Hover states and click feedback
+- **Professional Charts**: Recharts integration for data visualization
 
 ## 🔧 Configuration
 
@@ -156,13 +205,13 @@ interface Signal {
 ## 🔮 Future Enhancements
 
 ### Phase 2
-- Real-time data integration
+- Real-time data integration with Pensieve backend
 - Advanced filtering and search
 - User authentication
 - Custom dashboards
 
 ### Phase 3
-- Machine learning insights
+- Machine learning insights from Pensieve
 - Predictive analytics
 - Advanced reporting
 - API integrations
@@ -173,7 +222,7 @@ interface Signal {
 
 **Globe not loading**
 - Check browser console for errors
-- Verify @21st/globe package installation
+- Verify react-globe.gl package installation
 - Ensure WebGL support is enabled
 
 **Styling issues**
@@ -186,22 +235,80 @@ interface Signal {
 - Optimize globe rendering settings
 - Use React.memo for heavy components
 
-## 📝 License
+## 📚 API Reference
 
-This project is licensed under the MIT License.
+### Authentication
+
+All API requests require your API key in the header:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+### Rate Limits
+
+- **Free Tier**: 1,000 requests/month
+- **Starter**: 10,000 requests/month
+- **Growth**: 100,000 requests/month
+- **Scale**: Custom limits
+
+### Endpoints
+
+#### Analytics
+- `POST /v1/analytics/analyze` - Run custom analysis
+- `GET /v1/analytics/dashboard` - Get dashboard data
+- `POST /v1/analytics/report` - Generate custom reports
+
+#### Predictions
+- `POST /v1/predictions/forecast` - Generate forecasts
+- `POST /v1/predictions/segment` - Customer segmentation
+- `GET /v1/predictions/models` - Available ML models
+
+#### Data
+- `POST /v1/data/upload` - Upload datasets
+- `GET /v1/data/sources` - List data sources
+- `DELETE /v1/data/sources/{id}` - Remove data source
+
+## 💰 Pricing
+
+| Plan | Price | API Calls | Features |
+|------|-------|-----------|----------|
+| **Free** | $0/month | 1K/month | Basic analytics, 3 dashboards |
+| **Starter** | $99/month | 10K/month | Advanced analytics, ML models |
+| **Growth** | $299/month | 100K/month | Custom models, priority support |
+| **Scale** | Custom | Custom | Enterprise features, dedicated support |
+
+## 🔒 Security & Compliance
+
+- **SOC 2 Type II** certified
+- **GDPR** compliant
+- **HIPAA** ready (enterprise plans)
+- **End-to-end encryption** for data in transit and at rest
+- **Regular security audits** and penetration testing
+
+## 🆘 Support
+
+- **Documentation**: [docs.pensieve.ai](https://docs.pensieve.ai)
+- **Community**: [community.pensieve.ai](https://community.pensieve.ai)
+- **Email**: support@pensieve.ai
+- **Slack**: [Join our community](https://slack.pensieve.ai)
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-## 📞 Support
+## 📄 License
 
-For questions or support, please open an issue in the repository or contact the development team.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+Built with ❤️ for the startup community. Special thanks to our early adopters and beta testers.
 
 ---
 
-**Built with ❤️ using React, TypeScript, TailwindCSS, and 21st.dev Globe**
+**Ready to unlock your data's potential?** [Get started with Pensieve today](https://pensieve.ai/signup)
+
+*Pensieve - Where data becomes intelligence*
+
+**Runway Navigator - Visual market intelligence meets financial planning**
