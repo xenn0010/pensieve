@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     # API Keys
     gemini_api_key: str
     brex_api_key: Optional[str] = None
-    pylon_api_key: Optional[str] = None
+# pylon_api_key removed - API not available
     sixtyfour_api_key: Optional[str] = None
     mixrank_api_key: Optional[str] = None
     

@@ -229,4 +229,244 @@ class DecisionOrchestrator:
     async def _periodic_intelligence_sweep(self):
         """Perform periodic intelligence gathering when no events are queued"""
         print("Performing periodic intelligence sweep...")
-        # This will trigger data collection from all MCP servers
+        
+        # Coordinate WOW intelligence analysis across all MCP servers
+        await self._coordinate_wow_intelligence_analysis()
+        
+    async def _coordinate_wow_intelligence_analysis(self):
+        """Coordinate comprehensive WOW intelligence analysis across all systems"""
+        try:
+            # Define target companies for intelligence analysis
+            target_companies = [
+                'competitor1.com',
+                'competitor2.com', 
+                'unicorn-startup.com',
+                'legacy-enterprise.com'
+            ]
+            
+            intelligence_results = {}
+            
+            # Gather intelligence from all sources
+            for company in target_companies:
+                print(f"Running comprehensive WOW intelligence analysis for {company}")
+                
+                # Collect intelligence from all MCP servers simultaneously
+                intelligence_tasks = []
+                
+                # Task 1: SixtyFour people & market intelligence
+                intelligence_tasks.append(
+                    self._analyze_sixtyfour_wow_intelligence(company)
+                )
+                
+                # Task 2: MixRank technology intelligence  
+                intelligence_tasks.append(
+                    self._analyze_mixrank_tech_intelligence(company)
+                )
+                
+                # Task 3: Financial intelligence (Brex mock data)
+                intelligence_tasks.append(
+                    self._analyze_financial_intelligence(company)
+                )
+                
+                # Execute all intelligence gathering simultaneously
+                results = await asyncio.gather(*intelligence_tasks, return_exceptions=True)
+                
+                # Compile results
+                intelligence_results[company] = {
+                    'sixtyfour_intelligence': results[0] if len(results) > 0 else {},
+                    'mixrank_intelligence': results[1] if len(results) > 1 else {},
+                    'financial_intelligence': results[2] if len(results) > 2 else {},
+                    'analysis_timestamp': datetime.now().isoformat()
+                }
+                
+                # Process combined intelligence for this company
+                await self._process_combined_intelligence(company, intelligence_results[company])
+            
+            # Store comprehensive intelligence analysis
+            await supabase_client.log_business_event(
+                event_type='comprehensive_wow_intelligence_analysis',
+                event_data={
+                    'companies_analyzed': len(target_companies),
+                    'total_signals_detected': sum(
+                        len(data.get('sixtyfour_intelligence', {}).get('wow_signals', [])) +
+                        len(data.get('mixrank_intelligence', {}).get('technology_wow_signals', []))
+                        for data in intelligence_results.values()
+                    ),
+                    'analysis_summary': intelligence_results
+                },
+                priority='medium',
+                component='decision_orchestrator'
+            )
+            
+        except Exception as e:
+            print(f"Error in WOW intelligence analysis coordination: {e}")
+            await supabase_client.log_business_event(
+                event_type='intelligence_analysis_error',
+                event_data={'error': str(e)},
+                priority='high',
+                component='decision_orchestrator'
+            )
+    
+    async def _analyze_sixtyfour_wow_intelligence(self, company_domain: str) -> Dict[str, Any]:
+        """Mock SixtyFour WOW intelligence analysis (would integrate with actual MCP server)"""
+        try:
+            # This would integrate with the actual SixtyFour MCP server
+            # For now, simulate the analysis with the same logic
+            from mcp_servers.sixtyfour_mcp.market_intelligence import SixtyFourMarketIntelligence
+            
+            sixtyfour = SixtyFourMarketIntelligence()
+            return await sixtyfour.analyze_wow_intelligence_signals(company_domain)
+        except Exception as e:
+            print(f"Error analyzing SixtyFour intelligence for {company_domain}: {e}")
+            return {'error': str(e)}
+    
+    async def _analyze_mixrank_tech_intelligence(self, company_domain: str) -> Dict[str, Any]:
+        """Mock MixRank technology intelligence analysis (would integrate with actual MCP server)"""
+        try:
+            # This would integrate with the actual MixRank MCP server
+            from mcp_servers.mixrank_mcp.technology_intelligence import MixRankTechnologyIntelligence
+            
+            mixrank = MixRankTechnologyIntelligence()
+            return await mixrank.analyze_technology_wow_signals(company_domain)
+        except Exception as e:
+            print(f"Error analyzing MixRank intelligence for {company_domain}: {e}")
+            return {'error': str(e)}
+    
+    async def _analyze_financial_intelligence(self, company_domain: str) -> Dict[str, Any]:
+        """Analyze financial intelligence patterns"""
+        try:
+            # This would integrate with the Brex MCP server
+            from mcp_servers.brex_mcp.financial_monitor import BrexFinancialMonitor
+            
+            brex = BrexFinancialMonitor()
+            # Generate mock financial analysis for the company
+            return {
+                'company_domain': company_domain,
+                'financial_health_score': 0.75,
+                'burn_rate_trend': 'stable',
+                'cash_runway_days': 180,
+                'financial_risk_signals': [],
+                'analysis_timestamp': datetime.now().isoformat()
+            }
+        except Exception as e:
+            print(f"Error analyzing financial intelligence for {company_domain}: {e}")
+            return {'error': str(e)}
+    
+    async def _process_combined_intelligence(self, company_domain: str, intelligence_data: Dict[str, Any]):
+        """Process combined intelligence data and generate autonomous actions"""
+        try:
+            # Extract all WOW signals detected
+            all_wow_signals = []
+            
+            sixtyfour_data = intelligence_data.get('sixtyfour_intelligence', {})
+            if 'wow_signals' in sixtyfour_data:
+                all_wow_signals.extend(sixtyfour_data['wow_signals'])
+            
+            mixrank_data = intelligence_data.get('mixrank_intelligence', {})
+            if 'technology_wow_signals' in mixrank_data:
+                all_wow_signals.extend(mixrank_data['technology_wow_signals'])
+            
+            # If we detected significant WOW signals, create an intelligence event
+            if all_wow_signals:
+                critical_signals = [s for s in all_wow_signals if s.get('severity') == 'critical']
+                high_signals = [s for s in all_wow_signals if s.get('severity') == 'high']
+                
+                if critical_signals or len(high_signals) >= 2:
+                    # Create high-priority intelligence event
+                    event = IntelligenceEvent(
+                        event_type=EventType.COMPETITIVE_THREAT if critical_signals else EventType.MARKET_OPPORTUNITY,
+                        priority=Priority.CRITICAL if critical_signals else Priority.HIGH,
+                        source='wow_intelligence_orchestrator',
+                        data={
+                            'company_analyzed': company_domain,
+                            'total_signals': len(all_wow_signals),
+                            'critical_signals': len(critical_signals),
+                            'high_signals': len(high_signals),
+                            'wow_signals_detected': all_wow_signals[:5],  # Top 5 signals
+                            'recommended_actions': self._compile_wow_recommended_actions(all_wow_signals),
+                            'estimated_impact': self._estimate_combined_impact(all_wow_signals)
+                        },
+                        timestamp=datetime.now(),
+                        context={
+                            'intelligence_type': 'wow_signal_analysis',
+                            'analysis_scope': 'comprehensive_multi_domain',
+                            'target_company': company_domain
+                        }
+                    )
+                    
+                    # Add to processing queue
+                    await self.add_event(event)
+                    
+                    print(f"Generated high-priority WOW intelligence event for {company_domain}")
+                    print(f"Detected {len(critical_signals)} critical and {len(high_signals)} high-severity signals")
+        
+        except Exception as e:
+            print(f"Error processing combined intelligence for {company_domain}: {e}")
+    
+    def _compile_wow_recommended_actions(self, wow_signals: List[Dict[str, Any]]) -> List[str]:
+        """Compile recommended actions from all WOW signals"""
+        actions = set()  # Use set to avoid duplicates
+        
+        signal_types = {s.get('signal_type') for s in wow_signals}
+        
+        # Financial distress signals
+        if any('exodus' in st or 'death' in st for st in signal_types):
+            actions.update([
+                'Monitor for acquisition opportunities at distressed valuations',
+                'Review vendor relationships with distressed companies',
+                'Prepare competitive recruitment from struggling competitors'
+            ])
+        
+        # Technology advantage signals
+        if any('ai' in st or 'stealth' in st for st in signal_types):
+            actions.update([
+                'Accelerate AI capability development to maintain competitiveness',
+                'Investigate potential technology partnerships',
+                'Review AI talent acquisition strategy'
+            ])
+        
+        # Regulatory and compliance signals
+        if any('privacy' in st or 'regulatory' in st for st in signal_types):
+            actions.update([
+                'Review compliance posture and privacy practices',
+                'Assess competitive advantage from superior compliance',
+                'Monitor regulatory changes for market opportunities'
+            ])
+        
+        # Market manipulation and fraud signals
+        if any('manipulation' in st or 'scandal' in st for st in signal_types):
+            actions.update([
+                'Maintain ethical business practices for competitive advantage',
+                'Monitor market conditions for irregularities',
+                'Prepare for potential market disruption'
+            ])
+        
+        return list(actions)[:8]  # Top 8 actions
+    
+    def _estimate_combined_impact(self, wow_signals: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Estimate combined business impact of all WOW signals"""
+        impact_scores = []
+        cost_impacts = []
+        timeline_impacts = []
+        
+        for signal in wow_signals:
+            # Extract impact metrics
+            if 'probability' in str(signal):
+                for key, value in signal.items():
+                    if 'probability' in key and isinstance(value, (int, float)):
+                        impact_scores.append(value / 100)  # Normalize to 0-1
+            
+            if 'cost_impact_millions' in signal:
+                cost_impacts.append(signal['cost_impact_millions'])
+            
+            if 'timeline_months' in str(signal):
+                for key, value in signal.items():
+                    if 'timeline' in key and isinstance(value, (int, float)):
+                        timeline_impacts.append(value)
+        
+        return {
+            'average_impact_probability': sum(impact_scores) / len(impact_scores) if impact_scores else 0,
+            'total_estimated_cost_impact_millions': sum(cost_impacts),
+            'average_timeline_months': sum(timeline_impacts) / len(timeline_impacts) if timeline_impacts else 0,
+            'overall_threat_level': 'high' if any(s.get('severity') == 'critical' for s in wow_signals) else 'medium'
+        }
