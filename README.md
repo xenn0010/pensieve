@@ -2,7 +2,8 @@
 
 > **Palantir for Startups** - Enterprise-grade data intelligence platform with simple API access
 
-Pensieve transforms how startups harness their data through powerful analytics, predictive modeling, and actionable insights - all accessible via simple API keys.
+Pensieve transforms how startups harness their data through powerful analytics, predictive modeling, and actionable insights - all accessible via simpl
+ API keys.
 
 ## 🚀 What is Pensieve?
 
