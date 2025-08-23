@@ -10,6 +10,8 @@ from pydantic import BaseModel
 
 from config.settings import settings
 from config.supabase_client import supabase_client
+from intelligence_engine.cache.intelligence_cache_manager import cache_manager
+from intelligence_engine.cache.gemini_intelligence_tool import gemini_intelligence_tool, GEMINI_INTELLIGENCE_PROMPT
 
 
 class EventType(Enum):
@@ -53,9 +55,16 @@ class DecisionOrchestrator:
         self.event_queue = asyncio.Queue()
         self.active_decisions = {}
         self.decision_history = []
+        self.autonomous_action_engine = None
         
     async def start_event_processing(self):
         """Start the continuous event processing loop"""
+        # Initialize autonomous action engine
+        if not self.autonomous_action_engine:
+            from .autonomous_action_engine import AutonomousActionEngine
+            self.autonomous_action_engine = AutonomousActionEngine()
+            await self.autonomous_action_engine.initialize()
+            
         while True:
             try:
                 # Process events from queue
@@ -98,7 +107,29 @@ class DecisionOrchestrator:
                 }
             )
             
-            # Execute decision if confidence is high enough
+            # Execute autonomous actions through the action engine
+            if self.autonomous_action_engine:
+                action_result = await self.autonomous_action_engine.execute_autonomous_action({
+                    'event_type': event.event_type.value,
+                    'confidence': decision.confidence_score,
+                    'wow_signals': [{'signal_type': decision.action_type, 'severity': 'high'}],
+                    'risk_level': 'high' if decision.confidence_score > 0.8 else 'medium',
+                    'data': {
+                        'decision': decision.dict() if hasattr(decision, 'dict') else {
+                            'action_type': decision.action_type,
+                            'parameters': decision.parameters,
+                            'reasoning': decision.reasoning,
+                            'confidence_score': decision.confidence_score
+                        }
+                    }
+                })
+                
+                if action_result.success:
+                    print(f"Autonomous action executed successfully: {action_result.action_id}")
+                else:
+                    print(f"Autonomous action failed: {action_result.error_message}")
+            
+            # Original decision execution (kept for backwards compatibility)
             if decision.confidence_score > 0.7:
                 await self._execute_decision(decision, event)
                 # Log successful execution
@@ -129,9 +160,15 @@ class DecisionOrchestrator:
             print(f"Error generating AI decision: {e}")
     
     def _build_decision_prompt(self, event: IntelligenceEvent) -> str:
-        """Build comprehensive decision prompt for Gemini"""
+        """Build comprehensive decision prompt for Gemini with intelligence tool access"""
+        
+        # Extract relevant companies from event data for intelligence lookup
+        relevant_companies = self._extract_companies_from_event(event)
+        
         base_prompt = f"""
         You are an autonomous Chief Intelligence Officer for a startup. Analyze this intelligence event and decide on the optimal action.
+
+        {GEMINI_INTELLIGENCE_PROMPT}
 
         EVENT DETAILS:
         Type: {event.event_type.value}
@@ -146,25 +183,58 @@ class DecisionOrchestrator:
         - Active customer count: {event.context.get('customer_count', 'Unknown')}
         - Competitive pressure: {event.context.get('competitive_pressure', 'Unknown')}
         
-        AVAILABLE ACTIONS:
+        RELEVANT COMPANIES TO ANALYZE:
+        {', '.join(relevant_companies) if relevant_companies else 'None identified'}
+        
+        INTELLIGENCE ENHANCED ACTIONS:
         1. Financial Actions: transfer_funds, optimize_spend, emergency_funding_prep
-        2. Customer Actions: escalate_support, retention_campaign, satisfaction_survey
-        3. Competitive Actions: feature_gap_analysis, pricing_adjustment, market_positioning
+        2. Customer Actions: escalate_support, retention_campaign, satisfaction_survey, customer_research_email
+        3. Competitive Actions: feature_gap_analysis, pricing_adjustment, market_positioning, competitor_intelligence
         4. Research Actions: deep_market_analysis, competitor_intelligence, customer_research
         5. Alert Actions: notify_leadership, schedule_review, create_task
+        
+        INSTRUCTIONS:
+        1. If relevant companies are mentioned, use get_company_intelligence() to gather additional context
+        2. Base your decision on both the event data AND any intelligence you gather
+        3. If intelligence gathering reveals new opportunities or threats, factor those into your decision
         
         Respond with a JSON object containing:
         - action_type: specific action to take
         - parameters: detailed parameters for the action
-        - reasoning: detailed explanation of why this action
+        - reasoning: detailed explanation of why this action (include intelligence insights)
         - confidence_score: 0.0-1.0 confidence in this decision
         - expected_impact: predicted business impact
         - urgency_level: critical/high/medium/low
+        - intelligence_used: list of companies you analyzed for this decision
         
         Be decisive but calculated. Focus on actions that maximize business value while minimizing risk.
         """
         
         return base_prompt
+    
+    def _extract_companies_from_event(self, event: IntelligenceEvent) -> List[str]:
+        """Extract relevant company names from event data"""
+        companies = []
+        
+        # Look for company names in event data
+        event_str = json.dumps(event.data).lower()
+        
+        # Common competitors to check for
+        known_companies = [
+            'stripe', 'square', 'paypal', 'adyen',
+            'salesforce', 'hubspot', 'pipedrive',
+            'slack', 'teams', 'discord',
+            'github', 'gitlab', 'bitbucket',
+            'aws', 'gcp', 'azure', 'cloudflare',
+            'openai', 'anthropic', 'cohere',
+            'figma', 'adobe', 'canva'
+        ]
+        
+        for company in known_companies:
+            if company in event_str:
+                companies.append(company)
+        
+        return companies[:5]  # Limit to top 5 to avoid overloading
     
     def _parse_ai_decision(self, response_text: str) -> ActionDecision:
         """Parse Gemini response into structured decision"""
