@@ -242,8 +242,8 @@ class SupabaseClient:
             if component:
                 query = query.eq('component', component)
             
-            cutoff_time = datetime.now().replace(microsecond=0)
-            cutoff_time = cutoff_time.replace(hour=cutoff_time.hour - hours_back)
+            from datetime import timedelta
+            cutoff_time = datetime.now() - timedelta(hours=hours_back)
             query = query.gte('timestamp', cutoff_time.isoformat())
             
             result = query.order('timestamp', desc=True).limit(limit).execute()
@@ -473,8 +473,9 @@ class SupabaseClient:
         self.ensure_initialized()
         
         try:
-            cutoff_time = datetime.now().replace(microsecond=0)
-            cutoff_time = cutoff_time.replace(hour=cutoff_time.hour - hours_back)
+            from datetime import timedelta
+            cutoff_time = datetime.now() - timedelta(hours=hours_back)
+            cutoff_time_str = cutoff_time.isoformat()
             
             # Get decision counts by type
             decisions = await self.get_decision_history(
@@ -482,11 +483,16 @@ class SupabaseClient:
                 min_confidence=0.0
             )
             
-            # Filter by time
-            recent_decisions = [
-                d for d in decisions
-                if datetime.fromisoformat(d['created_at']) >= cutoff_time
-            ]
+            # Filter by time (handle timezone issues)
+            recent_decisions = []
+            for d in decisions:
+                try:
+                    created_at = datetime.fromisoformat(d['created_at'].replace('Z', '+00:00'))
+                    if created_at.replace(tzinfo=None) >= cutoff_time:
+                        recent_decisions.append(d)
+                except Exception:
+                    # If datetime parsing fails, include the decision
+                    recent_decisions.append(d)
             
             # Calculate analytics
             analytics = {
