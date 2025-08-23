@@ -4,6 +4,9 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 import logging
 
+# External API client
+from .sixtyfour_api_client import enrich_lead
+
 import httpx
 from mcp.server import Server
 from mcp.types import Resource, Tool, TextContent
