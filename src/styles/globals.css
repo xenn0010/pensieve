@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-dark-900 text-white;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer components {
+  .globe-container {
+    @apply relative w-full h-full;
+  }
+  
+  .kpi-card {
+    @apply rounded-xl p-4 shadow-lg;
+  }
+  
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 text-dark-300 hover:text-white hover:bg-dark-800 rounded-lg transition-all duration-200 cursor-pointer;
+  }
+  
+  .sidebar-item.active {
+    @apply text-white bg-primary-600/20 border-r-2 border-primary-500;
+  }
+  
+
+  
+  .globe-panel {
+    @apply bg-dark-800/95 backdrop-blur-md rounded-xl border border-dark-700 shadow-2xl;
+  }
+  
+  /* Custom pin marker styles */
+  .globe-pin {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+  
+  .globe-pin-high {
+    filter: drop-shadow(0 2px 6px rgba(239, 68, 68, 0.4));
+  }
+  
+  .globe-pin-medium {
+    filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.4));
+  }
+  
+  .globe-pin-low {
+    filter: drop-shadow(0 2px 6px rgba(16, 185, 129, 0.4));
+  }
+  
+  /* Success/Warning/Error color classes for chessboard */
+  .text-success {
+    color: #10b981;
+  }
+  
+  .text-warning {
+    color: #f59e0b;
+  }
+  
+  .text-destructive {
+    color: #ef4444;
+  }
+  
+  .text-success-foreground {
+    color: white;
+  }
+  
+  .text-warning-foreground {
+    color: white;  
+  }
+  
+  .text-destructive-foreground {
+    color: white;
+  }
+  
+  /* Confidence level colors */
+  .text-confidence-high {
+    color: #10b981;
+  }
+  
+  .text-confidence-medium {
+    color: #f59e0b;
+  }
+  
+  .text-confidence-low {
+    color: #ef4444;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-dark-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-dark-500;
+}
+
+/* Company drawer specific scrollbar */
+.company-drawer-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.company-drawer-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.company-drawer-scroll::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.4);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.company-drawer-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(75, 85, 99, 0.7);
+}
+
+.company-drawer-scroll::-webkit-scrollbar-thumb:active {
+  background: rgba(75, 85, 99, 0.8);
+}
+
+/* Company drawer scroll indicator animation */
+@keyframes scrollIndicatorPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.scroll-indicator {
+  animation: scrollIndicatorPulse 2s ease-in-out infinite;
+}
