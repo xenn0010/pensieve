@@ -103,7 +103,7 @@ async def _process_job_async(job_id: str, lead_info: Dict[str, Any], struct: Dic
 
 
 async def _make_async_api_call(lead_info: Dict[str, Any], struct: Dict[str, Any]) -> Dict[str, Any]:
-    """Make the actual API call without timeout"""
+    """Make the actual API call without timeout and store results"""
     api_key = settings.sixtyfour_api_key or os.getenv("SIXTYFOUR_API_KEY")
     if not api_key:
         raise SixtyFourAPIError("SixtyFour API key not configured")
@@ -121,21 +121,59 @@ async def _make_async_api_call(lead_info: Dict[str, Any], struct: Dict[str, Any]
     url = f"{API_BASE_URL}/enrich-lead"
     logger.debug("Async POST %s payload=%s", url, json.dumps(payload, indent=2)[:500])
 
+    start_time = time.time()
+    
     async with aiohttp.ClientSession() as session:
         try:
             # No timeout - let it run as long as needed
             async with session.post(url, headers=headers, json=payload) as resp:
-                if resp.status != 200:
-                    text = await resp.text()
-                    raise SixtyFourAPIError(f"API error {resp.status}: {text[:300]}")
+                duration_ms = int((time.time() - start_time) * 1000)
                 
-                body = await resp.json()
-                return body.get("structured_data", {})
+                response_text = await resp.text()
+                
+                try:
+                    body = json.loads(response_text) if response_text else {}
+                except json.JSONDecodeError:
+                    body = {"raw_response": response_text}
+                
+                # Store API call result for comprehensive tracking
+                try:
+                    from intelligence_engine.storage.data_storage_manager import data_storage_manager, APICallMetadata
+                    
+                    metadata = APICallMetadata(
+                        provider="sixtyfour",
+                        endpoint="/enrich-lead",
+                        method="POST",
+                        triggered_by="intelligence_cache"
+                    )
+                    
+                    await data_storage_manager.store_api_call_result(
+                        metadata=metadata,
+                        request_params=payload,
+                        response_status=resp.status,
+                        response_body=body,
+                        duration_ms=duration_ms,
+                        request_headers=headers,
+                        response_headers=dict(resp.headers)
+                    )
+                    
+                    logger.info(f"Stored SixtyFour API call result (status: {resp.status}, duration: {duration_ms}ms)")
+                    
+                except Exception as storage_error:
+                    logger.warning(f"Failed to store API call result: {storage_error}")
+                    # Continue processing even if storage fails
+                
+                if resp.status != 200:
+                    raise SixtyFourAPIError(f"API error {resp.status}: {response_text[:300]}")
+                
+                return body.get("structured_data", body)
                 
         except asyncio.TimeoutError:
             raise SixtyFourAPIError("Request timed out")
         except Exception as exc:
-            raise SixtyFourAPIError(f"Network error: {exc}")
+            if not isinstance(exc, SixtyFourAPIError):
+                raise SixtyFourAPIError(f"Network error: {exc}")
+            raise
 
 
 def get_job_status(job_id: str) -> SixtyFourJob:
