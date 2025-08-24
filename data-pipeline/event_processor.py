@@ -7,7 +7,13 @@ from dataclasses import dataclass
 import redis.asyncio as redis
 from pydantic import BaseModel
 
-from intelligence_engine.decision_orchestrator import IntelligenceEvent, EventType, Priority
+import sys
+import os
+# Add path to find intelligence_engine
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'intelligence-engine'))
+
+from decision_orchestrator import IntelligenceEvent, EventType, Priority
 from config.settings import settings
 
 
@@ -28,8 +34,13 @@ class RealTimeEventProcessor:
         
     async def initialize(self):
         """Initialize Redis connection and event processing"""
-        self.redis_client = redis.from_url(settings.redis_url)
-        await self._setup_event_streams()
+        try:
+            self.redis_client = redis.from_url(settings.redis_url)
+            await self._setup_event_streams()
+        except Exception as e:
+            print(f"Warning: Redis not available, running without real-time events: {e}")
+            # Continue without Redis - use in-memory event processing only
+            self.redis_client = None
         
     async def _setup_event_streams(self):
         """Setup Redis streams for real-time event processing"""

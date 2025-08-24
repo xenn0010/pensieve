@@ -15,7 +15,16 @@ from enum import Enum
 from config.settings import settings
 from config.supabase_client import supabase_client
 from config.logging_config import get_component_logger
-from mcp_servers.sixtyfour_mcp.sixtyfour_api_client import (
+import sys
+import os
+# Fix path to find mcp_servers
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+# Import from mcp-servers directory with hyphen
+sys.path.insert(0, os.path.join(project_root, 'mcp-servers', 'sixtyfour-mcp'))
+from sixtyfour_api_client import (
     submit_enrich_job, 
     get_job_status, 
     get_job_result,

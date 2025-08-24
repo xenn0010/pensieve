@@ -11,7 +11,7 @@ import redis.asyncio as redis
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from config.settings import settings
-from mcp_servers.brex_mcp.mock_financial_data import MockFinancialDataGenerator, DEMO_PROFILES, FinancialScenario
+from mock_financial_data import MockFinancialDataGenerator, DEMO_PROFILES, FinancialScenario
 
 logger = logging.getLogger(__name__)
 

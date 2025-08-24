@@ -19,7 +19,7 @@ class DeepIntelligence:
 
 class DeepIntelligenceAgent:
     def __init__(self, api_key: str):
-        self.api_key = api_yj9TfC1UL5MFUpVmjjpb4rCtErtoPaYk
+        self.api_key = 
         self.base_url = "https://api.sixtyfour.ai"
         self.headers = {
             "x-api-key": api_key,

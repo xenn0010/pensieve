@@ -1,0 +1,28 @@
+2025-08-23 21:02:44,198 | financial_monitor         | INFO     | financial_monitor.py:46 | Initialized mock financial data with profile: healthy_saas
+2025-08-23 21:02:44,198 | financial_monitor         | INFO     | financial_monitor.py:53 | Brex financial monitor initialized successfully
+2025-08-23 21:02:44,199 | market_intelligence       | INFO     | market_intelligence.py:335 | SixtyFour market intelligence initialized successfully
+2025-08-23 21:02:44,199 | technology_intelligence   | INFO     | technology_intelligence.py:295 | MixRank technology intelligence initialized successfully
+2025-08-23 21:02:44,205 | market_intelligence       | INFO     | market_intelligence.py:482 | Starting SixtyFour market monitoring
+2025-08-23 21:02:44,206 | technology_intelligence   | INFO     | technology_intelligence.py:443 | Starting MixRank technology monitoring
+2025-08-23 21:02:44,209 | market_intelligence       | ERROR    | market_intelligence.py:656 | Error analyzing competitors: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:02:44,210 | market_intelligence       | ERROR    | market_intelligence.py:744 | Error identifying opportunities: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:02:44,211 | market_intelligence       | ERROR    | market_intelligence.py:937 | Error analyzing trends: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:02:44,212 | market_intelligence       | ERROR    | market_intelligence.py:1008 | Error getting funding intelligence: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:02:44,212 | technology_intelligence   | ERROR    | technology_intelligence.py:1332 | Error monitoring tech changes: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:02:44,290 | technology_intelligence   | ERROR    | technology_intelligence.py:1013 | Error tracking funding rounds: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:02:44,291 | technology_intelligence   | ERROR    | technology_intelligence.py:1257 | Error analyzing tech adoption: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:02:44,292 | technology_intelligence   | ERROR    | technology_intelligence.py:1490 | Error mapping technology landscape: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:03:11,426 | financial_monitor         | INFO     | financial_monitor.py:46 | Initialized mock financial data with profile: healthy_saas
+2025-08-23 21:03:11,427 | financial_monitor         | INFO     | financial_monitor.py:53 | Brex financial monitor initialized successfully
+2025-08-23 21:03:11,428 | market_intelligence       | INFO     | market_intelligence.py:335 | SixtyFour market intelligence initialized successfully
+2025-08-23 21:03:11,428 | technology_intelligence   | INFO     | technology_intelligence.py:295 | MixRank technology intelligence initialized successfully
+2025-08-23 21:03:11,430 | market_intelligence       | INFO     | market_intelligence.py:482 | Starting SixtyFour market monitoring
+2025-08-23 21:03:11,430 | technology_intelligence   | INFO     | technology_intelligence.py:443 | Starting MixRank technology monitoring
+2025-08-23 21:03:11,434 | market_intelligence       | ERROR    | market_intelligence.py:656 | Error analyzing competitors: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:03:11,435 | market_intelligence       | ERROR    | market_intelligence.py:744 | Error identifying opportunities: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:03:11,436 | market_intelligence       | ERROR    | market_intelligence.py:937 | Error analyzing trends: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:03:11,437 | market_intelligence       | ERROR    | market_intelligence.py:1008 | Error getting funding intelligence: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:03:11,437 | technology_intelligence   | ERROR    | technology_intelligence.py:1332 | Error monitoring tech changes: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:03:11,438 | technology_intelligence   | ERROR    | technology_intelligence.py:1013 | Error tracking funding rounds: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:03:11,544 | technology_intelligence   | ERROR    | technology_intelligence.py:1257 | Error analyzing tech adoption: Request URL is missing an 'http://' or 'https://' protocol.
+2025-08-23 21:03:11,544 | technology_intelligence   | ERROR    | technology_intelligence.py:1490 | Error mapping technology landscape: Request URL is missing an 'http://' or 'https://' protocol.

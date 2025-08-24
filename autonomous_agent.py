@@ -19,6 +19,9 @@ import google.generativeai as genai
 from supabase import create_client, Client
 from config.settings import settings
 
+# Import vendor negotiation system
+from vendor_negotiation_system import execute_autonomous_vendor_negotiation
+
 # Add MCP servers to path for real data integration
 project_root = Path(__file__).parent
 mcp_servers_path = project_root / "mcp-servers"
@@ -679,62 +682,97 @@ class VendorContractRenegotiationAction(BaseAction):
             vendor_list = event_data.get("vendors", ["vendor1.com", "vendor2.com", "vendor3.com"])
             cost_reduction_target = event_data.get("cost_reduction_target", 0.15)  # 15%
             
-            negotiation_results = []
-            total_savings = 0
+            # Check if this is triggered by financial distress - if so, execute REAL negotiations
+            financial_crisis = event_data.get("financial_crisis", False)
+            cash_flow_pressure = event_data.get("cash_flow_pressure", 0.5)
             
-            for vendor in vendor_list:
-                # Fetch real vendor intelligence
-                vendor_data = await self.fetch_sixtyfour_data(vendor)
-                vendor_tech = await self.fetch_mixrank_data(vendor)
+            if financial_crisis or cash_flow_pressure > 0.6:
+                logger.info("Financial pressure detected - initiating REAL autonomous vendor negotiations")
                 
-                # Analyze vendor leverage
-                financial_health = vendor_data.get("company_analysis", {}).get("financial_health", "stable")
-                vendor_risk_factors = vendor_data.get("company_analysis", {}).get("risk_factors", [])
-                app_abandonment_risk = vendor_tech.get("app_abandonment_risk", 0.3)
+                # Execute real autonomous negotiations via email
+                real_negotiation_results = await execute_autonomous_vendor_negotiation(event_data)
                 
-                # Calculate negotiation leverage
-                leverage_score = 0.5  # Base leverage
-                if financial_health in ["distressed", "declining"]:
-                    leverage_score += 0.3
-                if len(vendor_risk_factors) > 3:
-                    leverage_score += 0.2
-                if app_abandonment_risk > 0.7:
-                    leverage_score += 0.2
+                execution_time = (datetime.now() - start_time).total_seconds()
                 
-                leverage_score = min(leverage_score, 0.9)  # Cap at 90%
+                result = ActionResult(
+                    success=True,
+                    action_type=self.name,
+                    message=f"REAL autonomous vendor negotiations initiated with {real_negotiation_results['total_vendors_contacted']} vendors",
+                    business_impact={
+                        "negotiation_type": "REAL_AUTONOMOUS",
+                        "vendors_contacted": real_negotiation_results['total_vendors_contacted'],
+                        "negotiations_initiated": real_negotiation_results['negotiations_initiated'],
+                        "expected_savings": real_negotiation_results['expected_savings'],
+                        "contact_method": "direct_email",
+                        "negotiation_details": real_negotiation_results['negotiation_results'],
+                        "data_sources": ["sixtyfour", "mixrank", "email_system"]
+                    },
+                    execution_time=execution_time,
+                    cost=1000.0  # Real negotiation overhead
+                )
                 
-                # Execute negotiation
-                contract_value = 50000 + hash(vendor) % 100000  # Simulate contract values
-                savings_achieved = contract_value * cost_reduction_target * leverage_score
-                total_savings += savings_achieved
-                
-                negotiation_results.append({
-                    "vendor": vendor,
-                    "leverage_score": leverage_score,
-                    "savings_achieved": savings_achieved,
-                    "vendor_financial_health": financial_health,
-                    "vendor_risk_level": len(vendor_risk_factors)
-                })
+                await self.log_action(result, event_data)
+                return result
             
-            execution_time = (datetime.now() - start_time).total_seconds()
-            
-            result = ActionResult(
-                success=True,
-                action_type=self.name,
-                message=f"Vendor renegotiation completed with ${total_savings:,.2f} total savings",
-                business_impact={
-                    "vendors_negotiated": len(vendor_list),
-                    "total_annual_savings": total_savings,
-                    "average_savings_rate": cost_reduction_target * 100,
-                    "negotiation_results": negotiation_results,
-                    "data_sources": ["sixtyfour", "mixrank"]
-                },
-                execution_time=execution_time,
-                cost=5000.0  # Negotiation costs
-            )
-            
-            await self.log_action(result, event_data)
-            return result
+            else:
+                # Standard intelligence-based negotiation analysis (existing functionality)
+                negotiation_results = []
+                total_savings = 0
+                
+                for vendor in vendor_list:
+                    # Fetch real vendor intelligence
+                    vendor_data = await self.fetch_sixtyfour_data(vendor)
+                    vendor_tech = await self.fetch_mixrank_data(vendor)
+                    
+                    # Analyze vendor leverage
+                    financial_health = vendor_data.get("company_analysis", {}).get("financial_health", "stable")
+                    vendor_risk_factors = vendor_data.get("company_analysis", {}).get("risk_factors", [])
+                    app_abandonment_risk = vendor_tech.get("app_abandonment_risk", 0.3)
+                    
+                    # Calculate negotiation leverage
+                    leverage_score = 0.5  # Base leverage
+                    if financial_health in ["distressed", "declining"]:
+                        leverage_score += 0.3
+                    if len(vendor_risk_factors) > 3:
+                        leverage_score += 0.2
+                    if app_abandonment_risk > 0.7:
+                        leverage_score += 0.2
+                    
+                    leverage_score = min(leverage_score, 0.9)  # Cap at 90%
+                    
+                    # Calculate potential negotiation
+                    contract_value = 50000 + hash(vendor) % 100000  # Simulate contract values
+                    savings_achieved = contract_value * cost_reduction_target * leverage_score
+                    total_savings += savings_achieved
+                    
+                    negotiation_results.append({
+                        "vendor": vendor,
+                        "leverage_score": leverage_score,
+                        "savings_achieved": savings_achieved,
+                        "vendor_financial_health": financial_health,
+                        "vendor_risk_level": len(vendor_risk_factors)
+                    })
+                
+                execution_time = (datetime.now() - start_time).total_seconds()
+                
+                result = ActionResult(
+                    success=True,
+                    action_type=self.name,
+                    message=f"Vendor negotiation analysis completed with ${total_savings:,.2f} potential savings",
+                    business_impact={
+                        "negotiation_type": "ANALYSIS_ONLY",
+                        "vendors_analyzed": len(vendor_list),
+                        "total_potential_savings": total_savings,
+                        "average_savings_rate": cost_reduction_target * 100,
+                        "negotiation_results": negotiation_results,
+                        "data_sources": ["sixtyfour", "mixrank"]
+                    },
+                    execution_time=execution_time,
+                    cost=2000.0  # Analysis costs
+                )
+                
+                await self.log_action(result, event_data)
+                return result
             
         except Exception as e:
             execution_time = (datetime.now() - start_time).total_seconds()

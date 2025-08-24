@@ -6,12 +6,23 @@ from typing import Optional
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
-from intelligence_engine.decision_orchestrator import DecisionOrchestrator
-from data_pipeline.event_processor import RealTimeEventProcessor
-from mcp_servers.brex_mcp.financial_monitor import BrexFinancialMonitor
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), 'intelligence-engine'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'data-pipeline'))
+sys.path.append(os.path.dirname(__file__))
+
+from decision_orchestrator import DecisionOrchestrator
+from event_processor import RealTimeEventProcessor
+# Import from directories with hyphens
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'mcp-servers', 'brex-mcp'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'mcp-servers', 'sixtyfour-mcp'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'mcp-servers', 'mixrank-mcp'))
+
+from financial_monitor import BrexFinancialMonitor
 # Pylon API not available - removed
-from mcp_servers.sixtyfour_mcp.market_intelligence import SixtyFourMarketIntelligence
-from mcp_servers.mixrank_mcp.technology_intelligence import MixRankTechnologyIntelligence
+from market_intelligence import SixtyFourMarketIntelligence
+from technology_intelligence import MixRankTechnologyIntelligence
 from config.settings import settings
 from config.logging_config import setup_logging, get_component_logger, log_error_with_context
 from config.supabase_client import supabase_client

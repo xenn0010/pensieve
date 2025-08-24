@@ -14,6 +14,15 @@ class Settings(BaseSettings):
     sixtyfour_api_key: Optional[str] = None
     mixrank_api_key: Optional[str] = None
     
+    # Email Configuration for Vendor Negotiations
+    smtp_server: Optional[str] = "smtp.gmail.com"
+    smtp_port: Optional[int] = 587
+    negotiation_email: Optional[str] = None
+    email_password: Optional[str] = None
+    company_name: Optional[str] = "Pensieve Intelligence"
+    cfo_name: Optional[str] = "Chief Financial Officer"
+    company_email: Optional[str] = None
+    
     # Database - Supabase
     supabase_url: str
     supabase_key: str

@@ -10,8 +10,8 @@ from pydantic import BaseModel
 
 from config.settings import settings
 from config.supabase_client import supabase_client
-from intelligence_engine.cache.intelligence_cache_manager import cache_manager
-from intelligence_engine.cache.gemini_intelligence_tool import gemini_intelligence_tool, GEMINI_INTELLIGENCE_PROMPT
+from cache.intelligence_cache_manager import cache_manager
+from cache.gemini_intelligence_tool import gemini_intelligence_tool, GEMINI_INTELLIGENCE_PROMPT
 
 
 class EventType(Enum):
