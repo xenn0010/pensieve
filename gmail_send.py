@@ -7,6 +7,7 @@ import os
 import re
 import sys
 import time
+import base64
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -19,7 +20,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape, Undefined
 from tenacity import (retry, stop_after_attempt, wait_exponential, 
                        retry_if_exception_type)
 from tqdm import tqdm
@@ -88,6 +89,11 @@ def strip_html_tags(html_content: str) -> str:
     text = re.sub(r'<[^>]+>', '', html_content)
     return text.strip()
 
+
+class SilentUndefined(Undefined):
+    """Jinja2 Undefined subclass to render missing variables as empty strings."""
+    def _fail_with_undefined_error(self, *args, **kwargs):
+        return ""
 
 def create_message(
     sender_email: str,
