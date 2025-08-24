@@ -94,6 +94,13 @@ const FooterSearchBar: React.FC<FooterSearchBarProps> = ({
           </button>
         </div>
       )}
+      
+      {/* Search Tips */}
+      <div className="mt-2 text-center">
+        <p className="text-xs text-dark-400">
+          💡 Try: company names, locations (SF, London), industries (Fintech, AI), or risk levels
+        </p>
+      </div>
     </div>
   );
 };

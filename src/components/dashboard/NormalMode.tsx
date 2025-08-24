@@ -1,5 +1,6 @@
 import React from 'react';
 import { BarChart3, Signal, Building2, Zap } from 'lucide-react';
+import ScenarioSwitcher from './ScenarioSwitcher';
 
 const NormalMode: React.FC = () => {
   const sections = [
@@ -39,6 +40,9 @@ const NormalMode: React.FC = () => {
           Standard dashboard view with key metrics and insights
         </p>
       </div>
+
+      {/* Financial Scenario Switcher */}
+      <ScenarioSwitcher onScenarioChange={() => {}} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {sections.map((section) => (
