@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 from intelligence_engine.decision_orchestrator import DecisionOrchestrator
 from data_pipeline.event_processor import RealTimeEventProcessor
 from mcp_servers.brex_mcp.financial_monitor import BrexFinancialMonitor
-from mcp_servers.pylon_mcp.customer_intelligence import PylonCustomerIntelligence
+# Pylon API not available - removed
 from mcp_servers.sixtyfour_mcp.market_intelligence import SixtyFourMarketIntelligence
 from mcp_servers.mixrank_mcp.technology_intelligence import MixRankTechnologyIntelligence
 from config.settings import settings
@@ -23,7 +23,7 @@ class PensieveCIO:
         self.decision_orchestrator = DecisionOrchestrator()
         self.event_processor = RealTimeEventProcessor(self.decision_orchestrator)
         self.brex_monitor = BrexFinancialMonitor()
-        self.pylon_intelligence = PylonCustomerIntelligence()
+# Pylon removed - no customer intelligence API available
         self.sixtyfour_intelligence = SixtyFourMarketIntelligence()
         self.mixrank_intelligence = MixRankTechnologyIntelligence()
         self.running = False
@@ -48,11 +48,7 @@ class PensieveCIO:
             else:
                 self.logger.warning("Brex API key not provided, skipping Brex monitor initialization")
             
-            if settings.pylon_api_key:
-                await self.pylon_intelligence.initialize()
-                self.logger.info("Pylon customer intelligence initialized successfully")
-            else:
-                self.logger.warning("Pylon API key not provided, skipping Pylon intelligence initialization")
+            # Pylon API not available - customer intelligence removed
             
             if settings.sixtyfour_api_key:
                 await self.sixtyfour_intelligence.initialize()
@@ -88,8 +84,7 @@ class PensieveCIO:
             if settings.brex_api_key:
                 tasks.append(asyncio.create_task(self.brex_monitor.start_monitoring()))
             
-            if settings.pylon_api_key:
-                tasks.append(asyncio.create_task(self.pylon_intelligence.start_monitoring()))
+            # Pylon monitoring removed - API not available
             
             if settings.sixtyfour_api_key:
                 tasks.append(asyncio.create_task(self.sixtyfour_intelligence.start_monitoring()))
